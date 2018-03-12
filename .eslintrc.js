@@ -10,7 +10,7 @@ module.exports = {
   },
   // https://github.com/vuejs/eslint-plugin-vue#priority-a-essential-error-prevention
   // consider switching to `plugin:vue/strongly-recommended` or `plugin:vue/recommended` for stricter rules.
-  extends: ['plugin:vue/essential', 'airbnb-base'],
+  extends: ['plugin:vue/recommended', 'airbnb-base'],
   // required to lint *.vue files
   plugins: [
     'vue'
@@ -45,6 +45,48 @@ module.exports = {
       optionalDependencies: ['test/unit/index.js']
     }],
     // allow debugger during development
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+
+
+
+    /*********************************************************
+     *******                vue rules                  *******
+     *********************************************************/
+    'vue/require-default-prop': 'off',
+    'vue/max-attributes-per-line': ['error', {
+      singleline: 4,
+      multiline: { max: 1, allowFirstLine: true },
+    }],
+    'vue/name-property-casing': ['error', 'kebab-case'],
+    'vue/order-in-components': ['error', {
+      order: [
+        'el',
+        'name',
+        'parent',
+        'functional',
+        'asyncData',
+        ['delimiters', 'comments'],
+        ['components', 'directives', 'filters'],
+        'extends',
+        'mixins',
+        'inheritAttrs',
+        'model',
+        ['props', 'propsData'],
+        'data',
+        'computed',
+        'watch',
+        'LIFECYCLE_HOOKS',
+        'methods',
+        ['template', 'render'],
+        'renderError'
+      ]
+    }],
+    'vue/html-closing-bracket-newline': ['error', {
+      'singleline': 'never',
+      'multiline': 'always'
+    }],
+    'vue/html-closing-bracket-spacing': ['error', {
+      'selfClosingTag': 'always',
+    }],
   }
 }

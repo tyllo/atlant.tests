@@ -1,15 +1,28 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import HelloWorld from '@/components/HelloWorld';
 
 Vue.use(Router);
 
-export default new Router({
+const router = new Router({
+  mode: 'history',
+  base: __dirname,
   routes: [
     {
       path: '/',
-      name: 'HelloWorld',
-      component: HelloWorld,
+      name: 'home',
+      redirect: '/fraction',
+    },
+    {
+      path: '/fraction',
+      name: 'fraction',
+      component: () => import(/* webpackChunkName: "fraction" */ '@/views/Fraction/Index'),
+    },
+    {
+      path: '/websocket',
+      name: 'websocket',
+      component: () => import(/* webpackChunkName: "websocket" */ '@/views/Websocket/Index'),
     },
   ],
 });
+
+export default router;
