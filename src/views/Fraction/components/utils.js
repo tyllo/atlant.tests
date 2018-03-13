@@ -77,18 +77,18 @@ export function toOpnExpression(expression) {
         result.push(item);
         break;
 
-      case 'operand':
+      case 'operation':
         if (/[-+/*(]/.test(item.value)) {
           stack.push(item);
         } else if (item.value === ')') {
-          let operand;
+          let operation;
           do {
-            operand = stack.pop();
-            result.push(operand);
-          } while (operand.value !== '(' && stack.length);
+            operation = stack.pop();
+            result.push(operation);
+          } while (operation.value !== '(' && stack.length);
 
-          operand = result.pop();
-          if (operand.value !== '(') throw new Error('Выражение неверно');
+          operation = result.pop();
+          if (operation.value !== '(') throw new Error('Выражение неверно');
         }
         break;
 
@@ -113,7 +113,7 @@ export function calcOpnExpression(expression) {
         stack.push(item);
         break;
 
-      case 'operand':
+      case 'operation':
         /* eslint no-case-declarations: 0 */
         const b = stack.pop();
         const a = stack.pop();

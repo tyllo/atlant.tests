@@ -14,11 +14,11 @@
             @change="onChange(index, { type: 'number', value: $event })"
           )
 
-          operands-input.expression__operand(
-            v-if="item.type === 'operand-list'"
+          operations-input.expression__operations(
+            v-if="item.type === 'operation-list'"
             :value="item.value"
             :key="index"
-            @change="onChange(index, { type: 'operand-list', value: $event })"
+            @change="onChange(index, { type: 'operation-list', value: $event })"
           )
 
         img.expression__icon(src="~mdi-svg/svg/equal.svg" key="icon")
@@ -35,20 +35,20 @@
 
 <script>
 import Fraction from './Fraction';
-import OperandsInput from './OperandsInput';
+import OperationsInput from './OperationsInput';
 import { toOpnExpression, calcOpnExpression } from './utils';
 
 export default {
   name: 'expression',
   components: {
     Fraction,
-    OperandsInput,
+    OperationsInput,
   },
   data: () => ({
     errorMessage: null,
     list: [
       { type: 'number', value: undefined },
-      { type: 'operand-list', value: undefined },
+      { type: 'operation-list', value: undefined },
       { type: 'number', value: undefined },
     ],
     result: {},
@@ -71,7 +71,7 @@ export default {
       this.result = null;
 
       this.list.push(
-        { type: 'operand-list', value: undefined },
+        { type: 'operation-list', value: undefined },
         { type: 'number', value: undefined },
       );
     },
@@ -81,10 +81,10 @@ export default {
         switch (item.type) {
           case 'number':
             return sum.concat(item);
-          case 'operand-list':
+          case 'operation-list':
             /* eslint no-case-declarations: 0 */
-            const operandList = item.value.split('').map(_ => ({ type: 'operand', value: _ }));
-            return sum.concat(operandList);
+            const operationList = item.value.split('').map(_ => ({ type: 'operation', value: _ }));
+            return sum.concat(operationList);
           default:
             console.warn(`Type [${item.type}] is not handle`);
             return sum;
@@ -136,7 +136,7 @@ export default {
   &__fraction
     margin: ($gutter / 2  ) 0;
 
-  &__operand
+  &__operations
     margin-left: ($gutter / 2);
     margin-right: @margin-left;
 

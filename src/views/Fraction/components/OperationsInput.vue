@@ -1,6 +1,6 @@
 <template lang="pug">
-  input.operands-input(
-    name="operand"
+  input.operations-input(
+    name="operations"
     @input="onInput"
   )
 </template>
@@ -10,7 +10,7 @@
 const REGEXP = /[-+/*()]+/;
 
 export default {
-  name: 'operands-input',
+  name: 'operations-input',
   props: {
     value: {
       type: String,
@@ -20,9 +20,9 @@ export default {
     onInput(e) {
       let { value } = e.target;
 
-      const isOperands = REGEXP.test(value);
+      const isOperations = REGEXP.test(value);
 
-      if (!isOperands && value) {
+      if (!isOperations && value) {
         value = this.value;
       }
 
@@ -38,7 +38,7 @@ export default {
 <style lang="stylus">
 @require "~@/styles/variables";
 
-.operands-input
+.operations-input
   width: (1.5 * $gutter);
   height: (1.5 * $gutter);
   text-align: center;
