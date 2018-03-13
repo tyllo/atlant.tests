@@ -1,2 +1,0 @@
-webpackJsonp([1],{YYMy:function(e,t,s){"use strict";Object.defineProperty(t,"__esModule",{value:!0});var n={render:function(){var e=this.$createElement,t=this._self._c||e;return t("div",{staticClass:"view-websocket"},[t("div",{staticClass:"h1",class:this.$options.name},[this._v("Взаимодействие с сервером по протоколу websocket")])])},staticRenderFns:[]};var i=s("VU/8")({name:"view-websocket"},n,!1,function(e){s("fPpS")},null,null);t.default=i.exports},fPpS:function(e,t){}});
-//# sourceMappingURL=1.8437c00dbe5c282c0747.js.map
