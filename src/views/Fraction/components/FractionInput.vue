@@ -25,6 +25,9 @@ export default {
   },
   methods: {
     onInput(e) {
+      // TODO: plugin vue-the-mask emit twice input event
+      if (!(e instanceof InputEvent)) return;
+
       e.target.style.width = null;
       const { offsetWidth, scrollWidth } = e.target;
 
