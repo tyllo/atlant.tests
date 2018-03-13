@@ -36,7 +36,7 @@
 <script>
 import Fraction from './Fraction';
 import OperationsInput from './OperationsInput';
-import { toOpnExpression, calcOpnExpression } from './utils';
+import { getResult } from './utils';
 
 export default {
   name: 'expression',
@@ -93,9 +93,7 @@ export default {
 
 
       try {
-        const opnExpression = toOpnExpression(expression);
-        const result = calcOpnExpression(opnExpression);
-        this.result = result;
+        this.result = getResult(expression);
       } catch (e) {
         this.errorMessage = e.message;
         console.error(e);

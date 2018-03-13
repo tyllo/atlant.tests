@@ -1,4 +1,4 @@
-class Fraction {
+export class Fraction {
   constructor({ numerator, denominator }) {
     if (denominator === 0) throw new Error('Делитель у дроби не может быть 0');
 
@@ -41,32 +41,108 @@ class Fraction {
   }
 }
 
+function log(message) {
+  if (process.env.NODE_ENV === 'development') {
+    /* eslint no-console: 0 */
+    console.log(message);
+  }
+}
+
 function calcFraction(a, b, operation) {
   switch (operation) {
-    case '+':
-      return Fraction.add(new Fraction(a), new Fraction(b));
+    case '+': {
+      const result = Fraction.add(new Fraction(a), new Fraction(b));
+      log(`${new Fraction(a)} + ${new Fraction(b)} = ${result}`);
+      return result;
+    }
 
-    case '-':
-      return Fraction.substraction(new Fraction(a), new Fraction(b));
+    case '-': {
+      const result = Fraction.substraction(new Fraction(a), new Fraction(b));
+      log(`${new Fraction(a)} - ${new Fraction(b)} = ${result}`);
+      return result;
+    }
 
-    case '*':
-      return Fraction.multiply(new Fraction(a), new Fraction(b));
+    case '*': {
+      const result = Fraction.multiply(new Fraction(a), new Fraction(b));
+      log(`${new Fraction(a)} * ${new Fraction(b)} = ${result}`);
+      return result;
+    }
 
-    case '/':
-      return Fraction.division(new Fraction(a), new Fraction(b));
+    case '/': {
+      const result = Fraction.division(new Fraction(a), new Fraction(b));
+      log(`${new Fraction(a)} / ${new Fraction(b)} = ${result}`);
+      return result;
+    }
 
     default:
       throw new Error(`Calc for operation [${operation}] is not exist`);
   }
 }
 
-/**
- * Преобразование из инфиксной нотации в обратную польскую запись
- * https://goo.gl/DfeBDT
- *
- * @param {[]} expression
-*/
-export function toOpnExpression(expression) {
+function getOperationPrioritet(operation) {
+  switch (operation) {
+    case '(':
+      return -1;
+
+    case '*':
+    case '/':
+      return 2;
+
+    case ')':
+      return 4;
+
+    case '-':
+    case '+':
+      return 3;
+
+    default:
+      return 0;
+  }
+}
+
+function handleOperand(result, stack, currentOperation) {
+  if (!stack.length) {
+    stack.push(currentOperation);
+    return;
+  }
+
+  if (currentOperation === '(') {
+    stack.push(currentOperation);
+    return;
+  }
+
+  const prevOperation = stack.pop();
+
+  if (prevOperation === '(' && currentOperation === ')') {
+    return;
+  }
+
+  if (prevOperation === '(') {
+    stack.push(prevOperation, currentOperation);
+    return;
+  }
+
+  const prevPrioritet = getOperationPrioritet(prevOperation);
+  const currentPrioritet = getOperationPrioritet(currentOperation);
+  if (prevPrioritet < currentPrioritet) {
+    const b = result.pop();
+    const a = result.pop();
+    const c = calcFraction(a, b, prevOperation);
+    result.push(c);
+    handleOperand(result, stack, currentOperation);
+  } else {
+    stack.push(prevOperation, currentOperation);
+  }
+}
+
+// https://habrahabr.ru/post/50196/
+export function getResult(rawExpression) {
+  const expression = [
+    { type: 'operation', value: '(' },
+    ...rawExpression,
+    { type: 'operation', value: ')' },
+  ];
+
   const result = [];
   const stack = [];
 
@@ -74,22 +150,11 @@ export function toOpnExpression(expression) {
   expression.forEach(item => {
     switch (item.type) {
       case 'number':
-        result.push(item);
+        result.push(item.value);
         break;
 
       case 'operation':
-        if (/[-+/*(]/.test(item.value)) {
-          stack.push(item);
-        } else if (item.value === ')') {
-          let operation;
-          do {
-            operation = stack.pop();
-            result.push(operation);
-          } while (operation.value !== '(' && stack.length);
-
-          operation = result.pop();
-          if (operation.value !== '(') throw new Error('Выражение неверно');
-        }
+        handleOperand(result, stack, item.value);
         break;
 
       default:
@@ -97,34 +162,9 @@ export function toOpnExpression(expression) {
     }
   });
 
-  return result.concat(stack);
-}
+  if (stack.length || result.length > 1) {
+    throw new Error('Выражение неверно');
+  }
 
-/** Вычисление из обратной польской записи
- * https://goo.gl/DfeBDT
- */
-export function calcOpnExpression(expression) {
-  const stack = [];
-
-  /* eslint arrow-parens: 0 */
-  expression.forEach(item => {
-    switch (item.type) {
-      case 'number':
-        stack.push(item);
-        break;
-
-      case 'operation':
-        /* eslint no-case-declarations: 0 */
-        const b = stack.pop();
-        const a = stack.pop();
-        const c = calcFraction(a.value, b.value, item.value);
-        stack.push({ type: 'number', value: c });
-        break;
-
-      default:
-        console.warn(`Type [${item.type}] is not handle`);
-    }
-  });
-
-  return stack.pop().value;
+  return result.pop();
 }
