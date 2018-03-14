@@ -10,15 +10,15 @@
             v-if="item.type === 'number'"
             v-bind="item.value"
             class="expression__fraction"
-            :key="index"
-            @change="onChange(index, { type: 'number', value: $event })"
+            :key="item.id"
+            @change="onChange(item, $event)"
           )
 
           operations-input.expression__operations(
             v-if="item.type === 'operation-list'"
             :value="item.value"
-            :key="index"
-            @change="onChange(index, { type: 'operation-list', value: $event })"
+            :key="item.id"
+            @change="onChange(item, $event)"
           )
 
         img.expression__icon(src="~mdi-svg/svg/equal.svg" key="icon")
@@ -47,9 +47,9 @@ export default {
   data: () => ({
     errorMessage: null,
     list: [
-      { type: 'number', value: undefined },
-      { type: 'operation-list', value: undefined },
-      { type: 'number', value: undefined },
+      { id: 0, type: 'number', value: undefined },
+      { id: 1, type: 'operation-list', value: undefined },
+      { id: 2, type: 'number', value: undefined },
     ],
     result: {},
   }),
@@ -59,20 +59,21 @@ export default {
     },
   },
   methods: {
-    onChange(index, e) {
+    onChange(item, value) {
       this.errorMessage = null;
       this.result = null;
 
-      this.list.splice(index, 1, e);
+      const index = this.list.indexOf(item);
+      this.list.splice(index, 1, { ...item, value });
       this.calculation();
     },
     addFraction() {
       this.errorMessage = null;
       this.result = null;
 
-      this.list.push(
-        { type: 'operation-list', value: undefined },
-        { type: 'number', value: undefined },
+      this.list.unshift(
+        { id: this.list + 1, type: 'number', value: undefined },
+        { id: this.list + 2, type: 'operation-list', value: undefined },
       );
     },
     calculation() {
