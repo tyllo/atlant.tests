@@ -1,7 +1,7 @@
 <template lang="pug">
     input.fraction-input(
+      ref="input"
       name="denominator"
-      v-mask="'################'"
       :value="value"
       @input="onInput"
       :disabled="disabled"
@@ -9,35 +9,45 @@
 </template>
 
 <script>
-import { mask } from 'vue-the-mask';
+
+const REGEXP = /^[-\d]+$/;
 
 export default {
   name: 'fraction-input',
-  directives: {
-    mask,
-  },
   props: {
     value: Number,
     disabled: Boolean,
+  },
+  watch: {
+    value() {
+      this.$nextTick(this.handleSize);
+    },
   },
   mounted() {
     this.margin = this.$el.offsetWidth - this.$el.clientWidth;
   },
   methods: {
     onInput(e) {
-      // TODO: plugin vue-the-mask emit twice input event
-      if (!(e instanceof InputEvent)) return;
+      let { value } = e.target;
 
-      e.target.style.width = null;
-      const { offsetWidth, scrollWidth } = e.target;
-
-      if (offsetWidth < scrollWidth) {
-        e.target.style.width = `${scrollWidth + this.margin}px`;
+      if (!REGEXP.test(value)) {
+        if (value !== '') {
+          value = this.value;
+          e.target.value = value;
+        }
       }
 
-      const { value } = e.target;
       this.$emit('input', value !== '' ? +value : undefined);
       this.$emit('change');
+    },
+    handleSize() {
+      const { input } = this.$refs;
+      input.style.width = null;
+      const { offsetWidth, scrollWidth } = input;
+
+      if (offsetWidth < scrollWidth) {
+        input.style.width = `${scrollWidth + this.margin}px`;
+      }
     },
   },
 };
