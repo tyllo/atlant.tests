@@ -124,7 +124,7 @@ function handleOperand(result, stack, currentOperation) {
 
   const prevPrioritet = getOperationPrioritet(prevOperation);
   const currentPrioritet = getOperationPrioritet(currentOperation);
-  if (prevPrioritet < currentPrioritet) {
+  if (prevPrioritet <= currentPrioritet) {
     const b = result.pop();
     const a = result.pop();
     const c = calcFraction(a, b, prevOperation);
